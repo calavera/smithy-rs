@@ -15,6 +15,7 @@ publish = false
 
 [dependencies]
 aws-smithy-http-server = { path = "../aws-smithy-http-server" }
+aws-smithy-http = { path = "../aws-smithy-http", features = ["rt-tokio"] }
 aws-smithy-types = { path = "../aws-smithy-types" }
 bytes = "1.1"
 delegate = "0.6"
@@ -27,6 +28,8 @@ pyo3-asyncio = { version = "0.16.0", features = ["attributes", "tokio-runtime"] 
 socket2 = { version = "0.4", features = ["all"] }
 thiserror = "1.0.31"
 tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7"
+tokio-stream = "0.1"
 tower = "0.4"
 tower-http = { version = "0.3", features = ["map-response-body", "trace"] }
 tracing = "0.1.34"

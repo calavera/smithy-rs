@@ -36,6 +36,12 @@ class PythonServerSymbolProvider(private val base: RustSymbolProvider) :
             RuntimeType.Blob(runtimeConfig).toSymbol().rustType() -> {
                 PythonServerRuntimeType.Blob(runtimeConfig).toSymbol()
             }
+            RuntimeType.ByteStream(runtimeConfig).toSymbol().rustType() -> {
+                PythonServerRuntimeType.ByteStream(runtimeConfig).toSymbol()
+            }
+            RuntimeType.DateTime(runtimeConfig).toSymbol().rustType() -> {
+                PythonServerRuntimeType.DateTime(runtimeConfig).toSymbol()
+            }
             else -> {
                 base.toSymbol(shape)
             }

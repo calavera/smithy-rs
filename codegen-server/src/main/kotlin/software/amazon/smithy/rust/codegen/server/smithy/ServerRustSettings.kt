@@ -15,7 +15,7 @@ import software.amazon.smithy.rust.codegen.smithy.RustSettings
 import java.util.Optional
 
 /**
- * Configuration of codegen settings
+ * Configuration of codegen settings.
  *
  * [renameExceptions]: Rename `Exception` to `Error` in the generated SDK
  * [includeFluentClient]: Generate a `client` module in the generated SDK (currently the AWS SDK sets this to false
@@ -29,7 +29,7 @@ data class ServerCodegenConfig(
     val includeFluentClient: Boolean = false,
     val addMessageToErrors: Boolean = false,
     val formatTimeoutSeconds: Int = 20,
-    val debugMode: Boolean = false,
+    val debugMode: Boolean = true,
     // TODO(EventStream): [CLEANUP] Remove this property when turning on Event Stream for all services
     val eventStreamAllowList: Set<String> = emptySet(),
 ) {
@@ -43,7 +43,7 @@ data class ServerCodegenConfig(
                     false,
                     false,
                     20,
-                    debugMode = false,
+                    debugMode = true,
                     emptySet()
                 )
             }

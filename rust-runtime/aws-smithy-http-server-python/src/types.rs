@@ -5,7 +5,23 @@
 
 //! Python wrapped types from aws-smithy-types.
 
+use std::borrow::BorrowMut;
+use std::path::Path;
+use std::pin::Pin;
+use std::sync::Arc;
+
+use aws_smithy_http::body::SdkBody;
+use aws_smithy_http_server::body::HttpBody;
+use bytes::{Buf, Bytes};
+use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
+use pyo3::pyclass::PyIterANextOutput;
+use pyo3::types::PyBytes;
+use pyo3::Python;
+use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::io::{AsyncRead, AsyncReadExt};
+use tokio_stream::StreamExt;
+use tokio_util::io::ReaderStream;
 
 /// Python Wrapper for [aws_smithy_types::Blob].
 #[pyclass]
@@ -50,6 +66,14 @@ impl Blob {
         *self = Self::pynew(data);
     }
 }
+
+#[pyclass]
+#[derive(Debug, Clone, PartialEq)]
+pub struct ByteStream(String);
+
+#[pyclass]
+#[derive(Debug, Clone, PartialEq)]
+pub struct DateTime(String);
 
 #[cfg(test)]
 mod tests {
