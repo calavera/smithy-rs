@@ -8,6 +8,8 @@
 use pyo3::prelude::*;
 use std::ops::Deref;
 
+use crate::Error;
+
 /// Python Wrapper for [aws_smithy_types::Blob].
 #[pyclass]
 #[derive(Debug, Clone, PartialEq)]
@@ -124,15 +126,16 @@ impl DateTime {
     #[staticmethod]
     pub fn from_nanos(epoch_nanos: i128) -> PyResult<Self> {
         Ok(Self(
-            aws_smithy_types::date_time::DateTime::from_nanos(epoch_nanos).unwrap(),
+            aws_smithy_types::date_time::DateTime::from_nanos(epoch_nanos)
+                .map_err(Error::DateTimeConversion)?,
         ))
     }
 
     /// Read 1 date of `format` from `s`, expecting either `delim` or EOF.
     #[staticmethod]
     pub fn read(s: &str, format: Format, delim: char) -> PyResult<(Self, &str)> {
-        let (self_, next) =
-            aws_smithy_types::date_time::DateTime::read(s, format.into(), delim).unwrap();
+        let (self_, next) = aws_smithy_types::date_time::DateTime::read(s, format.into(), delim)
+            .map_err(Error::DateTimeParse)?;
         Ok((Self(self_), next))
     }
 
@@ -166,7 +169,8 @@ impl DateTime {
     #[staticmethod]
     pub fn from_str(s: &str, format: Format) -> PyResult<Self> {
         Ok(Self(
-            aws_smithy_types::date_time::DateTime::from_str(s, format.into()).unwrap(),
+            aws_smithy_types::date_time::DateTime::from_str(s, format.into())
+                .map_err(Error::DateTimeParse)?,
         ))
     }
 
@@ -197,7 +201,7 @@ impl DateTime {
 
     /// Converts the `DateTime` to the number of milliseconds since the Unix epoch.
     pub fn to_millis(&self) -> PyResult<i64> {
-        Ok(self.0.to_millis().unwrap())
+        Ok(self.0.to_millis().map_err(Error::DateTimeConversion)?)
     }
 }
 
