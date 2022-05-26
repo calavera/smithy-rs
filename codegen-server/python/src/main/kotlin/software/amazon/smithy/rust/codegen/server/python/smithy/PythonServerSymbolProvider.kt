@@ -5,11 +5,17 @@
 
 package software.amazon.smithy.rust.codegen.server.python.smithy
 
+import software.amazon.smithy.codegen.core.CodegenException
 import software.amazon.smithy.codegen.core.Symbol
 import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.rust.codegen.smithy.RuntimeType
 import software.amazon.smithy.rust.codegen.smithy.RustSymbolProvider
 import software.amazon.smithy.rust.codegen.smithy.WrappingSymbolProvider
+<<<<<<< HEAD
+=======
+import software.amazon.smithy.rust.codegen.smithy.isOptional
+import software.amazon.smithy.rust.codegen.smithy.meta
+>>>>>>> Fix symbol provider to deal with optionals.
 import software.amazon.smithy.rust.codegen.smithy.rustType
 
 /**
