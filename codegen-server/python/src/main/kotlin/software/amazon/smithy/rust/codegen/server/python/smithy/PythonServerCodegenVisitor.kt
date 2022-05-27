@@ -141,7 +141,7 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
                 ##[#{pyo3}::pymodule]
                 ##[#{pyo3}(name = "$libName")]
                 pub fn python_library(py: #{pyo3}::Python<'_>, m: &#{pyo3}::types::PyModule) -> #{pyo3}::PyResult<()>
-            """,
+                """,
                 *codegenScope
             ) {
                 // / Add local types from this crate.
@@ -151,7 +151,7 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
                     let output = #{pyo3}::types::PyModule::new(py, "output")?;
                     let error = #{pyo3}::types::PyModule::new(py, "error")?;
                     let model = #{pyo3}::types::PyModule::new(py, "model")?;
-                """,
+                    """,
                     *codegenScope
                 )
                 serviceShapes.forEach() { shape ->
@@ -160,7 +160,7 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
                         writer.rustTemplate(
                             """
                             $moduleType.add_class::<crate::$moduleType::${shape.id.name}>()?;
-                        """,
+                            """,
                             *codegenScope
                         )
                     }
@@ -175,7 +175,7 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
                     m.add_submodule(error)?;
                     #{pyo3}::py_run!(py, model, "import sys; sys.modules['$libName.model'] = model");
                     m.add_submodule(model)?;
-                """,
+                    """,
                     *codegenScope
                 )
 
@@ -214,7 +214,7 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
                     """
                     m.add_class::<crate::python_server_application::App>()?;
                     Ok(())
-                """,
+                    """,
                     *codegenScope
                 )
             }
@@ -289,6 +289,8 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
         } else if (shape.hasTrait<ErrorTrait>()) {
             "error"
         } else if (shape.hasTrait<EnumTrait>()) {
+            "model"
+        } else if (shape is StructureShape) {
             "model"
         } else {
             null

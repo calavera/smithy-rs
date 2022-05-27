@@ -46,7 +46,9 @@ structure GetPokemonSpeciesOutput {
 
     /// A list of flavor text entries for this Pokémon species.
     @required
-    flavorTextEntries: FlavorTextEntries
+    flavorTextEntries: FlavorTextEntries,
+    @required
+    intMap: IntegerMap
 }
 
 /// Retrieve HTTP server statistiscs, such as calls count.
@@ -120,4 +122,9 @@ structure EmptyOperationOutput { }
 structure ResourceNotFoundException {
     @required
     message: String,
+}
+
+map IntegerMap {
+    key: String,
+    value: Integer
 }
