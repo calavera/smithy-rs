@@ -34,6 +34,8 @@ import software.amazon.smithy.rust.codegen.smithy.customize.RustCodegenDecorator
 import software.amazon.smithy.rust.codegen.smithy.generators.BuilderGenerator
 import software.amazon.smithy.rust.codegen.smithy.generators.CodegenTarget
 import software.amazon.smithy.rust.codegen.smithy.generators.implBlock
+import software.amazon.smithy.rust.codegen.smithy.traits.SyntheticInputTrait
+import software.amazon.smithy.rust.codegen.smithy.traits.SyntheticOutputTrait
 import software.amazon.smithy.rust.codegen.util.CommandFailed
 import software.amazon.smithy.rust.codegen.util.getTrait
 import software.amazon.smithy.rust.codegen.util.hasTrait
@@ -46,7 +48,7 @@ import software.amazon.smithy.rust.codegen.util.runCommand
  * This class inherits from [ServerCodegenVisitor] since it uses most of the functionlities of the super class
  * and have to override the symbol provider with [PythonServerSymbolProvider].
  */
-class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustCodegenDecorator) :
+class PythonServerCodegenVisitor(context: PluginContext, private val codegenDecorator: RustCodegenDecorator) :
     ServerCodegenVisitor(context, codegenDecorator) {
 
     private val codegenScope =
@@ -281,10 +283,15 @@ class PythonServerCodegenVisitor(context: PluginContext, codegenDecorator: RustC
             .render()
     }
 
+    // FIX: this is horrible, we need to find a smarter way
     private fun moduleType(shape: Shape): String? {
         return if (shape.hasTrait<InputTrait>()) {
             "input"
+        } else if (shape.hasTrait<SyntheticInputTrait>()) {
+            "input"
         } else if (shape.hasTrait<OutputTrait>()) {
+            "output"
+        } else if (shape.hasTrait<SyntheticOutputTrait>()) {
             "output"
         } else if (shape.hasTrait<ErrorTrait>()) {
             "error"

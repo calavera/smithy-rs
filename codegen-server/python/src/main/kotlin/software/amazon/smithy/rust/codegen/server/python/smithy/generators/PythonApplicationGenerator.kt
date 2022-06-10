@@ -144,7 +144,7 @@ class PythonApplicationGenerator(
                         let ${name}_locals = locals.clone();
                         let handler = self.inner.handlers.get("$name").expect("Python handler for `{$name}` not found").clone();
                         let router = router.$name(move |input, state| {
-                            #{pyo3asyncio}::tokio::scope(${name}_locals, crate::operation_handler::$name(input, state, handler))
+                            #{pyo3_asyncio}::tokio::scope(${name}_locals, crate::operation_handler::$name(input, state, handler))
                         });
                         """,
                         *codegenScope

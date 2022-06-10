@@ -10,14 +10,14 @@ import software.amazon.smithy.model.shapes.StringShape
 import software.amazon.smithy.model.traits.EnumTrait
 import software.amazon.smithy.rust.codegen.rustlang.RustWriter
 import software.amazon.smithy.rust.codegen.rustlang.Writable
-import software.amazon.smithy.rust.codegen.rustlang.writable
-import software.amazon.smithy.rust.codegen.rustlang.rust
 import software.amazon.smithy.rust.codegen.rustlang.asType
-import software.amazon.smithy.rust.codegen.rustlang.rustTemplate
-import software.amazon.smithy.rust.codegen.rustlang.rustBlockTemplate
+import software.amazon.smithy.rust.codegen.rustlang.rust
 import software.amazon.smithy.rust.codegen.rustlang.rustBlock
-import software.amazon.smithy.rust.codegen.server.smithy.generators.ServerEnumGenerator
+import software.amazon.smithy.rust.codegen.rustlang.rustBlockTemplate
+import software.amazon.smithy.rust.codegen.rustlang.rustTemplate
+import software.amazon.smithy.rust.codegen.rustlang.writable
 import software.amazon.smithy.rust.codegen.server.python.smithy.PythonServerCargoDependency
+import software.amazon.smithy.rust.codegen.server.smithy.generators.ServerEnumGenerator
 import software.amazon.smithy.rust.codegen.smithy.RuntimeConfig
 import software.amazon.smithy.rust.codegen.smithy.RustSymbolProvider
 import software.amazon.smithy.rust.codegen.util.dq
@@ -70,20 +70,23 @@ class PythonServerEnumGenerator(
             }
             """,
             *codegenScope,
-            "name_enum" to renderPyEnumName()
+            "name_method" to renderPyEnumName()
         )
     }
 
     private fun renderPyEnumName(): Writable =
         writable {
-            rustBlockTemplate("""
+            rustBlockTemplate(
+                """
                 ##[getter]
-                pub fn name(&self) -> &str 
-            """, *codegenScope) {
-                rustBlock("match self") { 
-                    sortedMembers.forEach { member -> 
+                pub fn name(&self) -> &str
+                """,
+                *codegenScope
+            ) {
+                rustBlock("match self") {
+                    sortedMembers.forEach { member ->
                         val memberName = member.name()?.name
-                        writer.rust("""$enumName::$memberName => ${memberName?.dq()},""")
+                        rust("""$enumName::$memberName => ${memberName?.dq()},""")
                     }
                 }
             }

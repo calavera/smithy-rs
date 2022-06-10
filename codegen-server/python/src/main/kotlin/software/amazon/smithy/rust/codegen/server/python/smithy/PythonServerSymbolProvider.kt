@@ -11,11 +11,8 @@ import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.rust.codegen.smithy.RuntimeType
 import software.amazon.smithy.rust.codegen.smithy.RustSymbolProvider
 import software.amazon.smithy.rust.codegen.smithy.WrappingSymbolProvider
-<<<<<<< HEAD
-=======
 import software.amazon.smithy.rust.codegen.smithy.isOptional
-import software.amazon.smithy.rust.codegen.smithy.meta
->>>>>>> Fix symbol provider to deal with optionals.
+import software.amazon.smithy.rust.codegen.smithy.makeOptional
 import software.amazon.smithy.rust.codegen.smithy.rustType
 
 /**
@@ -38,7 +35,17 @@ class PythonServerSymbolProvider(private val base: RustSymbolProvider) :
      * Swap the shape's symbol if its associated type does not implement `pyo3::PyClass`.
      */
     override fun toSymbol(shape: Shape): Symbol {
-        return when (base.toSymbol(shape).rustType()) {
+        // FIX: this is literally a CRIME, I need to find the right way to do this.
+        var optional = false
+        var symbol = base.toSymbol(shape)
+        if (symbol.isOptional()) {
+            if (symbol.references.size != 1) {
+                throw CodegenException("The number of type's references for $shape should be 1 but its ${symbol.references.size}")
+            }
+            symbol = symbol.references[0].symbol
+            optional = true
+        }
+        val out = when (symbol.rustType()) {
             RuntimeType.Blob(runtimeConfig).toSymbol().rustType() -> {
                 PythonServerRuntimeType.Blob(runtimeConfig).toSymbol()
             }
@@ -51,6 +58,11 @@ class PythonServerSymbolProvider(private val base: RustSymbolProvider) :
             else -> {
                 base.toSymbol(shape)
             }
+        }
+        if (optional) {
+            return out.makeOptional()
+        } else {
+            return out
         }
     }
 }
